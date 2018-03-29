@@ -144,14 +144,6 @@ public class GobangView extends View{
             AppHelperUtil.debug(TAG,"drawBackground --pts[ii + 3] = " + pts[ii + 3]);
         }
         canvas.drawLines(pts,mBackgroundLinePaint);
-//        for (int i = 0; i < 1; i++) {
-//            GameUIManger.BackgroundBeanLine backgroundBeanLine = lines.get(i);
-//            float startX  = backgroundBeanLine.startPoint.x + left;
-//            float startY = backgroundBeanLine.startPoint.y + top;
-//            float stopX = backgroundBeanLine.endPoint.x + left;
-//            float stopY = backgroundBeanLine.endPoint.y+ top;
-//            canvas.drawLine(startX,startY,stopX,stopY,mBackgroundLinePaint);
-//        }
     }
 
     public void reSet() {
