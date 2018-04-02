@@ -12,16 +12,17 @@ import android.view.WindowManager;
  */
 public class MyApplication extends Application{
 
-    public static Context sApplicationContext;
-    public static int sScreenWidth;
-    public static int sScreenHeight;
-    public static float sDensity;
+    public static Context sApplicationContext;//应用上下文
+    public static int sScreenWidth;//屏幕宽度
+    public static int sScreenHeight;//屏幕高度
+    public static float sDensity;//屏幕密度
 
     @Override
     public void onCreate() {
         super.onCreate();
         sApplicationContext = getApplicationContext();
 
+        //初始化变量
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(dm);

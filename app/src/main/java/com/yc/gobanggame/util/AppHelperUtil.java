@@ -5,7 +5,7 @@ import android.util.Log;
 /**
  * Author: yangchao
  * Date: 2018-03-26 17:09
- * Comment: //TODO
+ * Comment: 应用帮助类（代码复用）
  */
 public class AppHelperUtil {
 

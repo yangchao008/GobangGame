@@ -17,12 +17,12 @@ import butterknife.Unbinder;
 /**
  * Author: yangchao
  * Date: 2018-03-26 15:34
- * Comment: //TODO
+ * Comment: 游戏区的fragment
  */
 public class GameAreaFragment extends Fragment implements ILeft {
     public static final String TAG = GameAreaFragment.class.getName();
-    ImageView mNextStep;
-    View mContentView;
+    ImageView mNextStep;//下一个玩家的icon视图
+    View mContentView;//内容视图
     @BindView(R.id.gobang_view)
     GobangView mGobangView;
     Unbinder mUnBinder;
@@ -36,6 +36,7 @@ public class GameAreaFragment extends Fragment implements ILeft {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mContentView = inflater.inflate(R.layout.fragment_game_area, container, false);
+        //初始化视图
         mUnBinder = ButterKnife.bind(this, mContentView);
 
         mGobangView.setImageView(mNextStep);
@@ -65,7 +66,9 @@ public class GameAreaFragment extends Fragment implements ILeft {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        //释放游戏区view的资源
         mGobangView.destroy();
+        //视图解绑
         mUnBinder.unbind();
     }
 }

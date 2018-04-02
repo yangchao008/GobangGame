@@ -12,17 +12,18 @@ import static com.yc.gobanggame.bean.Step.Flags.UN_OCCUPY;
 /**
  * Author: yangchao
  * Date: 2018-03-26 19:37
- * Comment: //TODO
+ * Comment: 棋子落下的步数管理者
  */
 public class GameStepManger {
     final String TAG = getClass().getName();
 
-    volatile int count = 1;
-    boolean isComplete = false;
-    public List<Step> mStepBlackUser;
-    public List<Step> mStepWhiteUser;
-    public List<Step> mStepTemp;
-    public Step.UserType mCurrentUserType,mWinUserType;
+    volatile int count = 1;//一方连着的棋子计数
+    boolean isComplete = false;//是否哪一方已经赢了
+    public List<Step> mStepBlackUser;//黑方落子步数的集合
+    public List<Step> mStepWhiteUser;//白方落子步数的集合
+    public List<Step> mStepTemp;//临时落子步数的集合
+    public Step.UserType mCurrentUserType;//当前哪一方下
+    public Step.UserType mWinUserType;//保存赢的一方
 
     private static volatile GameStepManger mInstance;
     public static GameStepManger getInstance() {
@@ -35,17 +36,28 @@ public class GameStepManger {
     }
 
     public GameStepManger() {
+        //初始化对象
         mStepBlackUser = new ArrayList<>();
         mStepWhiteUser = new ArrayList<>();
         mStepTemp = new ArrayList<>();
         mCurrentUserType = Step.UserType.BLACK;
     }
 
+    /**
+     * 添加落子的步到集合中
+     * @param step
+     * @return false 这局棋已经结束；true 添加成功。
+     */
     public boolean addStep(Step step){
         if (isComplete)  return false;
         return add(step);
     }
 
+    /**
+     * 添加落子的步到集合中
+     * @param step
+     * @return
+     */
     private boolean add(Step step) {
         List<Step> currentSteps = getCurrentSteps();
 
@@ -55,10 +67,19 @@ public class GameStepManger {
         return true;
     }
 
+    /**
+     * 获取当前落子一方的数据集合
+     * @return
+     */
     private List<Step> getCurrentSteps() {
         return  Step.UserType.BLACK  == mCurrentUserType ? mStepBlackUser : mStepWhiteUser;
     }
 
+    /**
+     * 轮询落子一方的数据集合，添加邻居棋子
+     * @param newStep
+     * @param list
+     */
     private void setNearStep(Step newStep, List<Step> list) {
        for (Step step : list){
            int fy = newStep.point.x - step.point.x;
@@ -82,6 +103,9 @@ public class GameStepManger {
        }
     }
 
+    /**
+     * 重开一局
+     */
     public void reSet(){
         isComplete = false;
         mCurrentUserType = Step.UserType.BLACK;
@@ -90,6 +114,9 @@ public class GameStepManger {
         mStepWhiteUser.clear();
     }
 
+    /**
+     * 回退一步
+     */
     public void backStep() {
         isComplete = false;
         mCurrentUserType = Step.UserType.BLACK  == mCurrentUserType ? Step.UserType.WHITE : Step.UserType.BLACK;
@@ -106,6 +133,10 @@ public class GameStepManger {
         step.flag = UN_OCCUPY;
     }
 
+    /**
+     * 这局棋是否结束
+     * @return
+     */
     public boolean isComplete(){
         if (isComplete) return true;
         count = 1;
@@ -139,10 +170,18 @@ public class GameStepManger {
         return isComplete;
     }
 
+    /**
+     * 获取赢的一方
+     * @return
+     */
     public Step.UserType getWinUserType() {
         return mWinUserType;
     }
 
+    /**
+     * 获取朝右上方直线方位的棋子的个数
+     * @param root
+     */
     private void getCountToRightTopNearStep(Step root) {
         AppHelperUtil.debug(TAG,"getCountToRightTopNearStep -- count = " + count);
         if (root == null || count >= 5)  return;
@@ -152,6 +191,10 @@ public class GameStepManger {
         }
     }
 
+    /**
+     * 获取朝右方直线方位的棋子的个数
+     * @param root
+     */
     private void getCountToRightNearStep(Step root) {
         AppHelperUtil.debug(TAG,"getCountToRightNearStep -- count = " + count);
         if (root == null || count >= 5)  return;
@@ -161,6 +204,10 @@ public class GameStepManger {
         }
     }
 
+    /**
+     * 获取朝右下方直线方位的棋子的个数
+     * @param root
+     */
     private void getCountToRightBottomNearStep(Step root) {
         AppHelperUtil.debug(TAG,"getCountToRightBottomNearStep -- count = " + count);
         if (root == null || count >= 5)  return;
@@ -170,6 +217,10 @@ public class GameStepManger {
         }
     }
 
+    /**
+     * 获取朝下方直线方位的棋子的个数
+     * @param root
+     */
     private void getCountToBottomNearStep(Step root) {
         AppHelperUtil.debug(TAG,"getCountToBottomNearStep -- count = " + count);
         if (root == null || count >= 5)  return;
@@ -179,6 +230,10 @@ public class GameStepManger {
         }
     }
 
+    /**
+     * 获取黑方和白方总的棋子数据集合
+     * @return
+     */
     public List<Step> getAllStep() {
         List<Step> list = new ArrayList<>();
         mStepTemp.clear();

@@ -5,7 +5,7 @@ import android.widget.ImageView;
 /**
  * Author: yangchao
  * Date: 2018-03-26 15:37
- * Comment: //TODO
+ * Comment: 游戏区的左部分用户操作接口
  */
 public interface ILeft {
 

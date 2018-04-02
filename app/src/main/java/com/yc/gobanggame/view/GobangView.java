@@ -24,19 +24,18 @@ import java.util.List;
 /**
  * Author: yangchao
  * Date: 2018-03-26 17:04
- * Comment: //TODO
+ * Comment: 游戏区的view
  */
 public class GobangView extends View{
     final String TAG = getClass().getName();
 
-    GameStepManger mGameStepManger;
-    GameUIManger mGameUIManger;
-    Paint mBackgroundLinePaint,mPaint;
-    int left,top;
-    Bitmap mWhiteBitmap,mBlackBitmap,mNullBitmap;
+    GameStepManger mGameStepManger;//步数管理者
+    GameUIManger mGameUIManger;//UI管理者
+    Paint mBackgroundLinePaint, mStepPaint;
+    int left,top;//距离屏幕左边和顶部的距离（没有用处）
+    Bitmap mWhiteBitmap,mBlackBitmap;
     Context mContext;
     ImageView mNextStep;
-    Step mLastStep;
 
     public void setImageView(ImageView imageView) {
         mNextStep = imageView;
@@ -62,6 +61,10 @@ public class GobangView extends View{
         init(context);
     }
 
+    /**
+     * 初始化
+     * @param context
+     */
     private void init(Context context) {
         mContext = context;
         mBlackBitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.btn_red_pre);
@@ -70,7 +73,7 @@ public class GobangView extends View{
         mGameStepManger = GameStepManger.getInstance();
         mGameUIManger = GameUIManger.getInstance();
 
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mStepPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBackgroundLinePaint = new Paint();
 
         /*
@@ -111,20 +114,31 @@ public class GobangView extends View{
         drawAllStep(canvas);
     }
 
+    /**
+     * 绘画走的所有棋子
+     * @param canvas
+     */
     private void drawAllStep(Canvas canvas) {
         List<Step> steps = mGameStepManger.getAllStep();
         for (Step step : steps){
             canvas.drawBitmap(Step.UserType.BLACK  == step.userType ? mBlackBitmap : mWhiteBitmap ,
-                    step.rectF.left,step.rectF.top,mPaint);
+                    step.rectF.left,step.rectF.top, mStepPaint);
         }
     }
 
+    /**
+     * 展示当前落子的一方
+     */
     private void showNextStep(){
         if (mNextStep != null)
             mNextStep.setImageResource(Step.UserType.BLACK  == mGameStepManger.mCurrentUserType
                     ? R.mipmap.btn_red_pre : R.mipmap.btn_green_pre);
     }
 
+    /**
+     * 绘画棋盘的背景线条
+     * @param canvas
+     */
     private void drawBackground(Canvas canvas) {
         if (left < 1)   return;
         List<GameUIManger.BackgroundBeanLine> lines = mGameUIManger.mBackgroundLines;
@@ -138,7 +152,7 @@ public class GobangView extends View{
             AppHelperUtil.debug(TAG,"drawBackground --pts[ii] = " + pts[ii]);
             pts[ii + 1] = backgroundBeanLine.startPoint.y;
             AppHelperUtil.debug(TAG,"drawBackground --pts[ii + 1] = " + pts[ii + 1]);
-            pts[ii + 2] = backgroundBeanLine.endPoint.x ;
+            pts[ii + 2] = backgroundBeanLine.endPoint.x;
             AppHelperUtil.debug(TAG,"drawBackground --pts[ii + 2] = " + pts[ii + 2]);
             pts[ii + 3] = backgroundBeanLine.endPoint.y;
             AppHelperUtil.debug(TAG,"drawBackground --pts[ii + 3] = " + pts[ii + 3]);
@@ -146,12 +160,18 @@ public class GobangView extends View{
         canvas.drawLines(pts,mBackgroundLinePaint);
     }
 
+    /**
+     * 重开一局
+     */
     public void reSet() {
         mGameStepManger.reSet();
         mGameUIManger.reSet();
         invalidate();
     }
 
+    /**
+     * 悔棋（回退到上一步）
+     */
     public void backStep() {
         if (mGameStepManger.mStepWhiteUser.size() > 0 || mGameStepManger.mStepBlackUser.size() > 0) {
             mGameStepManger.backStep();
@@ -159,17 +179,27 @@ public class GobangView extends View{
         }
     }
 
+    /**
+     * 棋盘是不是没有落子
+     * @return
+     */
     public boolean isEmpty() {
         return 0 == mGameStepManger.mStepBlackUser.size() && 0 == mGameStepManger.mStepWhiteUser.size();
     }
 
+    /**
+     * 释放资源
+     */
     public void destroy(){
         mGameStepManger.reSet();
         recycleBitmap(mBlackBitmap);
         recycleBitmap(mWhiteBitmap);
-        recycleBitmap(mNullBitmap);
     }
 
+    /**
+     * 回收bitmap
+     * @param bitmap
+     */
     private void recycleBitmap(Bitmap bitmap) {
         if (bitmap != null && !bitmap.isRecycled())
             bitmap.recycle();
@@ -179,13 +209,14 @@ public class GobangView extends View{
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
+                //根据当前手指点下的坐标，获取棋子当前步的对象，为null的话，说明当前步已经落过
                 Step step = mGameUIManger.getStep(event.getX(),event.getY(),mGameStepManger.mCurrentUserType);
                 if (step != null && mGameStepManger.addStep(step)){
-                    mLastStep = step;
-                    if (mGameStepManger.isComplete()){
+                    if (mGameStepManger.isComplete()){//判断是不是当前方已经赢了
                         Toast.makeText(mContext,(Step.UserType.BLACK == mGameStepManger.getWinUserType() ?
                                 "红方" : "绿方") + "赢了" ,Toast.LENGTH_LONG).show();
                     }
+                    //重绘
                     invalidate();
                     return true;
                 }

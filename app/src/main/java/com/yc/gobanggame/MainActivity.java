@@ -12,13 +12,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+/**
+ * Author: yangchao
+ * Date: 2018-03-26 15:33
+ * Comment: 主页
+ */
 public class MainActivity extends FragmentActivity {
     final String TAG = getClass().getName();
 
     Unbinder mUnBinder;
     @BindView(R.id.iv_next)
-    ImageView mIvNext;
-    AlertDialog.Builder mAlertDialogBuilder;
+    ImageView mIvNext;//下一个玩家的icon视图
+    AlertDialog.Builder mAlertDialogBuilder;//对话框
 
     ILeft mILeft;
 
@@ -26,8 +31,10 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //初始化视图
         mUnBinder = ButterKnife.bind(this);
 
+        //加载fragment
         GameAreaFragment fragment = new GameAreaFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.game_area, fragment, GameAreaFragment.TAG).commit();
@@ -41,6 +48,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //视图解绑
         mUnBinder.unbind();
     }
 
@@ -63,6 +71,11 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    /**
+     * 初始化对话框，如果已经初始化过，就直接展示
+     * @param view
+     * @param msg
+     */
     private void initDialog(final View view, String msg) {
         if (mAlertDialogBuilder == null) {
             mAlertDialogBuilder = new AlertDialog.Builder(this);
@@ -81,6 +94,6 @@ public class MainActivity extends FragmentActivity {
 
     @OnClick(R.id.btn_exit)
     public void onViewClicked() {
-        finish();
+        finish();//退出按钮
     }
 }
