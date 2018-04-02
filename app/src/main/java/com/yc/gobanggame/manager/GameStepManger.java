@@ -44,7 +44,7 @@ public class GameStepManger {
     }
 
     /**
-     * 添加落子的步到集合中
+     * 添加落子的步对象到集合中
      * @param step
      * @return false 这局棋已经结束；true 添加成功。
      */
@@ -54,7 +54,7 @@ public class GameStepManger {
     }
 
     /**
-     * 添加落子的步到集合中
+     * 添加落子的步对象到集合中
      * @param step
      * @return
      */
