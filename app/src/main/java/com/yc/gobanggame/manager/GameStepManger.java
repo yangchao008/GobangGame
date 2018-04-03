@@ -164,7 +164,7 @@ public class GameStepManger {
                 if (count >= 5) {
                     isComplete = true;
                     break;
-                }
+                }else count = 1;
             }
         AppHelperUtil.debug(TAG,"isComplete -- count = " + count);
         return isComplete;

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.yc.gobanggame.MyApplication;
 import com.yc.gobanggame.R;
 import com.yc.gobanggame.bean.Step;
 import com.yc.gobanggame.manager.GameStepManger;
@@ -101,14 +102,17 @@ public class GobangView extends View{
         left = mFloats[0];
         top = mFloats[1];
         AppHelperUtil.debug(TAG,"onMeasure left = " + left + "-- top = " + top);
-        if (getWidth() > 0 && mGameUIManger.beanSpaceHeight < 1) {
-            mGameUIManger.initData(getWidth(), getHeight());
+
+        int width = getWidth();
+        if (width > 0) {
+            mGameUIManger.initData(width, getHeight());
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        mGameUIManger.initData(getWidth(), getHeight());//手机平台的onMeasure方法中getWidth()值为0
         drawBackground(canvas);
         showNextStep();
         drawAllStep(canvas);
@@ -140,7 +144,6 @@ public class GobangView extends View{
      * @param canvas
      */
     private void drawBackground(Canvas canvas) {
-        if (left < 1)   return;
         List<GameUIManger.BackgroundBeanLine> lines = mGameUIManger.mBackgroundLines;
         int size = lines.size();
         AppHelperUtil.debug(TAG,"drawBackground -- left = " + left + "-- top = " + top+ "-- size = " + size);
@@ -192,6 +195,7 @@ public class GobangView extends View{
      */
     public void destroy(){
         mGameStepManger.reSet();
+        mGameUIManger.clear();
         recycleBitmap(mBlackBitmap);
         recycleBitmap(mWhiteBitmap);
     }

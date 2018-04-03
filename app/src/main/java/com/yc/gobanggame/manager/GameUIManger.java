@@ -57,7 +57,7 @@ public class GameUIManger {
      * 初始化棋子落下的空间集合
      */
     private void initSpaceBeanRect() {
-        if (mSpaceBeanRect != null)   mSpaceBeanRect.clear();
+        if (mSpaceBeanRect != null && mSpaceBeanRect.size() > 0)   return;
         mSpaceBeanRect = new ArrayList<>();
         float fx = AREA_BOUNDER - beanSpaceWidth / 2;
         float fy = AREA_BOUNDER - beanSpaceHeight / 2;
@@ -87,7 +87,7 @@ public class GameUIManger {
      *初始化棋盘背景线的集合
      */
     private void initBackgroundLines() {
-        if (mBackgroundLines != null)   return;
+        if (mBackgroundLines != null && mBackgroundLines.size() > 0)   return;
 
         mBackgroundLines = new ArrayList<>();
         for (int i = 0; i < VERTICAL_LINE_COUNT; i++) {
@@ -156,7 +156,16 @@ public class GameUIManger {
      * 重开一局
      */
     public void reSet() {
+        clear();
         initSpaceBeanRect();
+    }
+
+    /**
+     * 释放资源
+     */
+    public void clear(){
+        mBackgroundLines.clear();
+        mSpaceBeanRect.clear();
     }
 
     /**
