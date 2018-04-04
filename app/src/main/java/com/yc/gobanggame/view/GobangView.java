@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.yc.gobanggame.ILeft;
 import com.yc.gobanggame.MyApplication;
 import com.yc.gobanggame.R;
 import com.yc.gobanggame.bean.Step;
@@ -27,7 +28,7 @@ import java.util.List;
  * Date: 2018-03-26 17:04
  * Comment: 游戏区的view
  */
-public class GobangView extends View{
+public class GobangView extends View implements ILeft{
     final String TAG = getClass().getName();
 
     GameStepManger mGameStepManger;//步数管理者
@@ -166,6 +167,7 @@ public class GobangView extends View{
     /**
      * 重开一局
      */
+    @Override
     public void reSet() {
         mGameStepManger.reSet();
         mGameUIManger.reSet();
@@ -175,6 +177,7 @@ public class GobangView extends View{
     /**
      * 悔棋（回退到上一步）
      */
+    @Override
     public void backStep() {
         if (mGameStepManger.mStepWhiteUser.size() > 0 || mGameStepManger.mStepBlackUser.size() > 0) {
             mGameStepManger.backStep();
@@ -186,8 +189,9 @@ public class GobangView extends View{
      * 棋盘是不是没有落子
      * @return
      */
+    @Override
     public boolean isEmpty() {
-        return 0 == mGameStepManger.mStepBlackUser.size() && 0 == mGameStepManger.mStepWhiteUser.size();
+        return mGameStepManger.isEmpty();
     }
 
     /**

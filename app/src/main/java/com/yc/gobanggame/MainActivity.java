@@ -42,7 +42,7 @@ public class MainActivity extends FragmentActivity {
         mILeft = fragment;
 
         if (mILeft != null)
-            mILeft.nextStep(mIvNext);
+            fragment.nextStep(mIvNext);
     }
 
     @Override

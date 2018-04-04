@@ -53,7 +53,6 @@ public class GameAreaFragment extends Fragment implements ILeft {
         mGobangView.backStep();
     }
 
-    @Override
     public void nextStep(ImageView imageView) {
         mNextStep = imageView;
     }

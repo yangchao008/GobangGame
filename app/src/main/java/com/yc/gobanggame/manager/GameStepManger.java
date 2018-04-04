@@ -1,5 +1,6 @@
 package com.yc.gobanggame.manager;
 
+import com.yc.gobanggame.ILeft;
 import com.yc.gobanggame.bean.Step;
 import com.yc.gobanggame.util.AppHelperUtil;
 
@@ -14,7 +15,7 @@ import static com.yc.gobanggame.bean.Step.Flags.UN_OCCUPY;
  * Date: 2018-03-26 19:37
  * Comment: 棋子落下的步数管理者
  */
-public class GameStepManger {
+public class GameStepManger implements ILeft{
     final String TAG = getClass().getName();
 
     volatile int count = 1;//一方连着的棋子计数
@@ -106,6 +107,7 @@ public class GameStepManger {
     /**
      * 重开一局
      */
+    @Override
     public void reSet(){
         isComplete = false;
         mCurrentUserType = Step.UserType.BLACK;
@@ -115,8 +117,18 @@ public class GameStepManger {
     }
 
     /**
+     * 棋盘是不是没有落子
+     * @return
+     */
+    @Override
+    public boolean isEmpty() {
+        return 0 == mStepBlackUser.size() && 0 == mStepWhiteUser.size();
+    }
+
+    /**
      * 回退一步
      */
+    @Override
     public void backStep() {
         isComplete = false;
         mCurrentUserType = Step.UserType.BLACK  == mCurrentUserType ? Step.UserType.WHITE : Step.UserType.BLACK;
